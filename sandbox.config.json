@@ -4,7 +4,7 @@
     "template": "node",
     "disableLogging": false,
     "container": {
-      "port": 5,
+      "port": 3000,
       "node": 14
     }
   }
