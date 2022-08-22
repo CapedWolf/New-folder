@@ -2,9 +2,11 @@
 const queryString = window.location.search;
 //3762 20 nw edmonton, t6t1r8 | 608 Windross Crescent NW, Edmonton, AB T6T 1X9
 const urlParams = new URLSearchParams(queryString);
-let str: string =urlParams.get('code');
-let arr: Array = str.split("|");
+
+let str: string = urlParams.get('code') || '';
+let arr: Array<string> = str.split("|");
 console.log(arr);
+
 
 
 const addresses = arr;
@@ -18,19 +20,19 @@ var geocoder;
 // app.listen(3000);
 
 
-function codeAddress(geocoder, map) {
-  geocoder.geocode({'address': address}, function(results, status) {
-    if (status === 'OK') {
-      map.setCenter(results[0].geometry.location);
-      var marker = new google.maps.Marker({
-        map: map,
-        position: results[0].geometry.location
-      });
-    } else {
-      alert('Geocode was not successful for the following reason: ' + status);
-    }
-  });
-}
+// function codeAddress(geocoder, map) {
+//   geocoder.geocode({'address': address}, function(results, status) {
+//     if (status === 'OK') {
+//       map.setCenter(results[0].geometry.location);
+//       var marker = new google.maps.Marker({
+//         map: map,
+//         position: results[0].geometry.location
+//       });
+//     } else {
+//       alert('Geocode was not successful for the following reason: ' + status);
+//     }
+//   });
+// }
 
 
 function initAutocomplete() {
@@ -50,18 +52,18 @@ function initAutocomplete() {
   var marker, i;
 
 
-  var locations = [
-    ['Bondi Beach', -33.890542, 151.274856, 4],
-    ['Coogee Beach', -33.923036, 151.259052, 5],
-    ['Cronulla Beach', -34.028249, 151.157507, 3],
-    ['Manly Beach', -33.80010128657071, 151.28747820854187, 2],
-    ['Maroubra Beach', -33.950198, 151.259302, 1]
+  let locations : string[][]= [
+    ['Bondi Beach', '-33.890542', '151.274856', '4'],
+    ['Coogee Beach', '-33.923036','151.259052', '5'],
+    ['Cronulla Beach', '-34.028249', '151.157507', '3'],
+    ['Manly Beach', '-33.80010128657071', '151.28747820854187', '2'],
+    ['Maroubra Beach', '-33.950198', '151.259302', '1']
   ];
   
 
   for (i = 0; i < locations.length; i++) {  
     marker = new google.maps.Marker({
-      position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+      position: new google.maps.LatLng(Number(locations[i][1]),Number( locations[i][2])),
       map: map
     });
     
@@ -92,7 +94,7 @@ function initAutocomplete() {
   searchBox.addListener("places_changed", () => {
     const places = searchBox.getPlaces();
 
-    if (places.length == 0) {
+    if ( places !=  null && places.length == 0) {
       return;
     }
 
@@ -105,6 +107,9 @@ function initAutocomplete() {
     // For each place, get the icon, name and location.
     const bounds = new google.maps.LatLngBounds();
 
+    
+    if(places)
+    {
     places.forEach((place) => {
       if (!place.geometry || !place.geometry.location) {
         console.log("Returned place contains no geometry");
@@ -136,6 +141,7 @@ function initAutocomplete() {
         bounds.extend(place.geometry.location);
       }
     });
+  }
     map.fitBounds(bounds);
   });
 }
